@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,51 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String           @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String           @unique
+  password     String
+  type         UserType
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  postedJobs   Job[]            @relation("recruiterToJob")
+  applications JobApplication[]
+}
+
+model Job {
+  id           String           @id @default(uuid())
+  title        String
+  description  String
+  status       JobStatus        @default(AVAILABLE)
+  recruiter    User             @relation("recruiterToJob", fields: [recruiterId], references: [id])
+  recruiterId  String
+  applications JobApplication[]
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model JobApplication {
+  id          String   @id @default(uuid())
+  job         Job      @relation(fields: [jobId], references: [id])
+  jobId       String
+  candidate   User     @relation(fields: [candidateId], references: [id])
+  candidateId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([jobId, candidateId])
+}
+
+enum UserType {
+  CANDIDATE
+  RECRUITER
+}
+
+enum JobStatus {
+  AVAILABLE
+  NOT_AVAILABLE
 }

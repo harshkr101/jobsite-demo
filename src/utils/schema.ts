@@ -15,6 +15,7 @@ export const jobSchema = z.object({
   title: z.string().max(100),
   description: z.string().max(500),
   status: z.string(),
+  recruiterId: z.string(),
 });
 
 export const loginSchema = z.object({

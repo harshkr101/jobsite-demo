@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev  --debug --respawn --transpile-only ./src/index.ts"
+    "dev": "ts-node-dev  --debug --respawn --transpile-only ./src/index.ts",
+    "build": "npm clean && tsc",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:generate": "prisma generate"
   },
   "keywords": [],
   "author": "",
